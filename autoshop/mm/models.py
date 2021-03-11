@@ -7,8 +7,8 @@ from django.db.models import CASCADE, PROTECT
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=24)
-    order = models.CharField(max_length=24)
+    title = models.CharField(max_length=124)
+    order = models.CharField(max_length=124)
 
     def __str__(self):
         return self.title
@@ -23,7 +23,7 @@ class Tag(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(to='Category', on_delete=CASCADE)
+    category = models.ForeignKey(to='Category', related_name='product_cat', on_delete=CASCADE)
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100)
     price = models.IntegerField(default=0)
@@ -46,4 +46,4 @@ class CartItem(models.Model):
 
 
 class Cart(models.Model):
-    owner = models.OneToOneField(to='auth.User', on_delete=PROTECT)
+    owner = models.OneToOneField(to='auth.User', related_name='cart', on_delete=PROTECT)

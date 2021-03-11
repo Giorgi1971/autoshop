@@ -14,3 +14,33 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the owner of the snippet.
         return obj.owner == request.user
+
+
+class IsOwner(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Write permissions are only allowed to the owner of the snippet.
+        return obj.owner == request.user
+
+
+class HaveCart(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        print(request.user)
+        # Write permissions are only allowed to the owner of the snippet.
+        return obj.owner == request.user
+
+
+class IsSuperUserOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow staff to edit it.
+    """
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return bool(request.user and request.user.is_superuser)

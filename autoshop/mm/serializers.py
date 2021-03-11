@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
+    cart = serializers.HyperlinkedRelatedField(
+        view_name='cart-detail',
+        queryset=Cart.objects.all()
+    )
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'snippets']
+        fields = ['id', 'cart', 'username']
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -18,13 +21,36 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    product = serializers.HyperlinkedRelatedField(
-        view_name='product-detail',  # სახელის მიხედვით იღებს ურლ-ს
-        queryset=Product.objects.all()
-        # read_only=True -ზე ველს საერთოდ არ გამოიტანს ქვევით create-ში.
-    )
+    # product = serializers.CharField()
+    # product = serializers.HyperlinkedRelatedField(
+    #     view_name='product-detail',
+    #     queryset=Product.objects.all()
+    #     # read_only=True -ზე ველს საერთოდ არ გამოიტანს ქვევით create-ში.
+    # )
 
     class Meta:
         model = Category
+        fields = ['id', 'title', 'order', 'product_cat']
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
         fields = '__all__'
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    cart = serializers.CharField()
+
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        # fields = ['id', 'owner']
+        fields = '__all__'
+
 
