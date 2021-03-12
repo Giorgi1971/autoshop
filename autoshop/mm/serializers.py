@@ -11,36 +11,36 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'cart', 'username']
+        fields = ['id', 'url', 'cart', 'username']
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    cart_item = serializers.PrimaryKeyRelatedField(many=True, queryset=CartItem.objects.all())
+    # slug = serializers.HyperlinkedIdentityField(view_name='product-slug', format='html')
+
     class Meta:
         model = Product
-        fields = ['id', 'title', 'category', 'slug', 'price', 'description']
+        fields = ['id', 'url', 'title', 'category', 'slug', 'cart_item', 'price', 'description']
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    # product = serializers.CharField()
-    # product = serializers.HyperlinkedRelatedField(
-    #     view_name='product-detail',
-    #     queryset=Product.objects.all()
-    #     # read_only=True -ზე ველს საერთოდ არ გამოიტანს ქვევით create-ში.
-    # )
+    count_product = serializers.ReadOnlyField()
 
     class Meta:
         model = Category
-        fields = ['id', 'title', 'order', 'product_cat']
+        fields = ['id', 'url', 'title', 'order', 'count_product', 'product_cat']
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ['id', 'url', 'title', 'products']
+        # fields = '__all__'
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    cart = serializers.CharField()
+    product = serializers.ReadOnlyField(source='product.title')
+    p_price = serializers.ReadOnlyField(source='product.price')
 
     class Meta:
         model = CartItem
@@ -48,9 +48,11 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
+    items = serializers.PrimaryKeyRelatedField(many=True, queryset=CartItem.objects.all())
+
     class Meta:
         model = Cart
-        # fields = ['id', 'owner']
-        fields = '__all__'
+        fields = ['id', 'owner', 'items']
+        # fields = '__all__'
 
 

@@ -13,6 +13,9 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+    def count_product(self):
+        return self.product_cat.count()
+
 
 class Tag(models.Model):
     title = models.CharField(max_length=24)
@@ -43,6 +46,9 @@ class CartItem(models.Model):
     order = models.CharField(max_length=100)
     active = models.BooleanField(default=False)
     cart = models.ForeignKey(to='Cart', related_name='items', on_delete=PROTECT)
+
+    def p_price(self):
+        return self.product.price
 
 
 class Cart(models.Model):
